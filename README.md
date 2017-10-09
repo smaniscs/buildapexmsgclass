@@ -20,7 +20,7 @@ Note that the password and access token should be one contiguous string, with no
 
 ## Installation
 
-1. Download the (buildapexmsgclass-1.0.0.vsix)[https://github.com/smaniscs/buildapexmsgclass/raw/master/buildapexmsgclass-1.0.0.vsix] package to a temp folder.
+1. Download the [buildapexmsgclass-1.0.0.vsix](https://github.com/smaniscs/buildapexmsgclass/raw/master/buildapexmsgclass-1.0.0.vsix) package to a temp folder.
 2. Press keyboard shortcut F1 to open the Command Palette.
 3. Find 'Extension: Install From VSIX...' and press ENTER.
 4. In the file open dialog,  locate the VSIX file you download in step 1, then click the Open button.
