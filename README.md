@@ -16,7 +16,7 @@ If not using ForceCode, manually create force.json at the root of your project u
 	"url": "https://login.salesforce.com"
 }
 ```
-Note that the password and access token should be one contiguous string, with no delimiter or space between them. Also note that *force.json* is already listed in the .gitignore file, so that you don't accidentally push your org credentials to github.
+Note that the password and access token should be one contiguous string, with no delimiter or space between them.
 
 ## Usage/Features
 
