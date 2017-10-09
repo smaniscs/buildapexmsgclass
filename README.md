@@ -18,6 +18,13 @@ If not using ForceCode, manually create force.json at the root of your project u
 ```
 Note that the password and access token should be one contiguous string, with no delimiter or space between them.
 
+## Installation
+
+1. Download the (buildapexmsgclass-1.0.0.vsix)[https://github.com/smaniscs/buildapexmsgclass/raw/master/buildapexmsgclass-1.0.0.vsix] package to a temp folder.
+2. Press keyboard shortcut F1 to open the Command Palette.
+3. Find 'Extension: Install From VSIX...' and press ENTER.
+4. In the file open dialog,  locate the VSIX file you download in step 1, then click the Open button.
+
 ## Usage/Features
 
 Open the Command Palette (keyboard shortcut F1 on Windows and Mac) and choose *Build Apex Message Class* to run this extension.  A list of all editable, insertable, or deleteable sObjects found in the target org will be listed;  if an sObject is not editable, not insertable, and not deleteable,  it's excluded from the list.  After picking an sObject from the list,  an Apex Message class will be generated into your projects *src/classes* folder and a text editor pane automatically opened for the newly generated file.  Pressing ESCAPE when the sObject list is displayed will cancel generation of the Message class.
