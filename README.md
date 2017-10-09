@@ -12,7 +12,9 @@ The Message class will contain a convenience constructor which accepts an instan
 
 ## Requirements
 
-The credentials and login URL for connecting to a target Salesforce org are read from config file *force.json*, which must exist in the root of your project.  If you also happen to be using the most excellent [ForceCode](https://github.com/celador/ForceCode) extension for Salesforce platform dev work, your project will already have a force.json. If not using ForceCode, manually create force.json at the root of your project using this structure:
+The credentials, login URL, and target API version for the target Salesforce org are read from config file *force.json*, which must exist in the root of your project.  If you also happen to be using the most excellent [ForceCode](https://github.com/celador/ForceCode) extension for Salesforce platform dev work, your project will already have a force.json. 
+
+If not using ForceCode, manually create force.json at the root of your project using this structure:
 
 ```
 {
