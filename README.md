@@ -4,9 +4,11 @@ This is a Visual Studio Code extension which works with the Salesforce platform 
 
 ## Usage/Features
 
-Open the Command Palette (on Mac: SHIFT+COMMAND+P) and choose 'Build Apex Message Class' to run this extension.  A list of all editable, insertable, or deleteable sObjects found in the target domain will be listed.  After picking an sObject from the list,  an Apex Message class will be generated into your projects *src/classes* folder and a text editor pane automatically opened for the newly generated file. The generated class name is the name of the selected sObject (minus any package name, underscores, and '__c') with 'Msg' appended .  e.g., if you select custom sObject 'Some_Custom_Object__c', the resultant Message class file will be named SomeCustomObjectMsg.cls.
+Open the Command Palette (on Mac: SHIFT+COMMAND+P) and choose 'Build Apex Message Class' to run this extension.  A list of all editable, insertable, or deleteable sObjects found in the target domain will be listed.  After picking an sObject from the list,  an Apex Message class will be generated into your projects *src/classes* folder and a text editor pane automatically opened for the newly generated file. 
 
-Setter/getter field names in the Message class are normalized, i.e. any optional package name, "__c", and underscore characters are removed and the setter/getter field name is camel-cased.   e.g., packaged sObject field *SM_llcbi__Site_Visit_Date__c* would be normalized to *siteVisitDate*.
+The generated class name is the normalized (i.e., any package name, underscores, and '__c' removed) name of the selected sObject, with 'Msg' appended.  e.g., if you select custom sObject 'Some_Custom_Object__c', the resultant Message class file will be named SomeCustomObjectMsg.cls.
+
+Setter/getter field names in the Message class are also normalized, then camel-cased.  e.g., packaged sObject field *SM_llcbi__Site_Visit_Date__c* would be normalized to *siteVisitDate*.
 
 The Message class will contain a convenience constructor which accepts an instance of the target sObject, allowing you to quicky/easily create a Message object.  Conversely, a *toRecord()* method is provided to let you quickly convert a populated Mesage object into an instance of the target sObject.
 
