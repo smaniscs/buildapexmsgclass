@@ -2,15 +2,13 @@
 
 This is a Visual Studio Code extension which works with the Salesforce platform to generate an Apex "Message" class from a selected sObject.
 
-## Features
+## Usage/Features
 
 Open the Command Palette (on Mac: SHIFT+COMMAND+P) and choose 'Build Apex Message Class' to run this extension.  A list of all editable, insertable, or deleteable sObjects found in the target domain will be listed.  After picking an sObject from the list,  an Apex Message class will be generated into your projects *src/classes* folder and a text editor pane automatically opened for the newly generated file. Note that 'Msg' will be auto-appended to the sObject name when creating the name of the generated Message class.  e.g., if you select the Account object, the resultant Message class file will be named AccountMsg.cls.
 
 Setter/getter field names in the Message class are normalized, i.e. any optional package name, "__c", and underscore characters are removed and the setter/getter field name is camel-cased.   e.g.,  sObject field *SM_llcbi__Site_Visit_Date__c* would be normalized to *siteVisitDate*.
 
 The Message class will contain a convenience constructor which accepts an instance of the target sObject, allowing you to quicky/easily create a Message object.  Conversely, a *toRecord()* method is provided to let you quickly convert a populated Mesage object into an instance of the target sObject.
- 
-\!\[feature X\]\(images/feature-x.png\)
 
 ## Requirements
 
@@ -37,20 +35,3 @@ If using the ForceCode extension on a Mac, you can press OPTION+COMMAND+S to for
 ### 1.0.0
 
 Initial release of the extension.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
