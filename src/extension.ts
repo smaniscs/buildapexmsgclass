@@ -31,6 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
 				let userName = jsonText.username;
 				let password = jsonText.password;
 				let url = jsonText.url;
+				let apiVersion = jsonText.apiVersion;
 				
 				if (!userName) { 
 					vscode.window.showErrorMessage('No value for "username" is set in "force.json".');
@@ -40,6 +41,9 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				if (!url) {
 					vscode.window.showErrorMessage('No value for "url" is set in "force.json".');
+				}
+				if (!apiVersion) {
+					vscode.window.showErrorMessage('No value for "apiVersion" is set in "force.json".');
 				}
 				
 				conn = new jsforce.Connection({
@@ -67,7 +71,14 @@ export function activate(context: vscode.ExtensionContext) {
 					
 					vscode.window.showQuickPick(sobjArray.sort())
 					.then(selectedItem => {
-						buildMessageClass(conn, selectedItem);
+						if (selectedItem) {
+							buildMessageClass(conn, apiVersion, selectedItem);
+						}
+						else {
+							vscode.window.showErrorMessage('Apex Message class generation canceled.');
+							return;
+						}
+						
 					});
 				}));
 			});
