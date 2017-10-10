@@ -17,15 +17,16 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.buildApexMsgClass', () => {
 		// The code you place here will be executed every time your command is executed
-		
 		let conn = null;
 		
+		// Look for force.json config file.
 		vscode.workspace.findFiles('**/force.json')
 		.then(result => {
 			if (result.length == 0) {
 				vscode.window.showInformationMessage('Can\'t find a "force.json" file for your org credentials.');
 				return;
 			}
+			// Load relevant config bits from file.
 			vscode.workspace.openTextDocument(result[0]).then(textDocument => {
 				let jsonText = JSON.parse(textDocument.getText());
 				let userName = jsonText.username;
@@ -50,6 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
 					loginUrl: url
 				});
 				
+				// Login in to org, then get a list of all sObjects.
 				conn.login(userName, password)
 				.then(userInfo => conn.describeGlobal((err, res) => {
 					if (err) {
@@ -60,6 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
 					let sobjArray = new Array();
 					let sobj = null;
 					
+					// Build an array of Sobjects,  skipping any object that can't be modified in any way.
 					for (var i = 0; i < res.sobjects.length; i++) {
 						sobj = res.sobjects[i];
 						// skip non updateable objects
@@ -68,9 +71,10 @@ export function activate(context: vscode.ExtensionContext) {
 						}
 						sobjArray.push(sobj.name);
 					}
-					
+					// Present user with QuickPick/type-ahead list of alpha-sorted sObjects.
 					vscode.window.showQuickPick(sobjArray.sort())
 					.then(selectedItem => {
+						// Build the Apex Message class from the target sObject.
 						if (selectedItem) {
 							buildMessageClass(conn, apiVersion, selectedItem);
 						}
@@ -78,14 +82,10 @@ export function activate(context: vscode.ExtensionContext) {
 							vscode.window.showErrorMessage('Apex Message class generation canceled.');
 							return;
 						}
-						
 					});
 				}));
 			});
 		})
-		
-		// Display a message box to the user
-		//vscode.window.showInformationMessage('Hello World!');
 	});
 
 	context.subscriptions.push(disposable);

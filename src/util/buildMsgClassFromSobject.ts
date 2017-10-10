@@ -75,12 +75,12 @@ export function buildMessageClass(conn, apiVersion, sobjName) {
 		// Move Msg properties to new SOBject instance properties.
 		fieldArray.forEach((field, index, fields) => {
 			if (field[0] === 'recordId') {
-			ws.write(`${INDENT2}if(!String.isBlank(this.recordId)) {\n`)
-			ws.write(`${INDENT3}${SOBJECT_FIRST_LETTER}.Id = this.recordId;\n`)
-			ws.write(`${INDENT2}}\n`)  // close if statemnt.
+				ws.write(`${INDENT2}if(!String.isBlank(this.recordId)) {\n`  )
+				ws.write(`${INDENT3}${SOBJECT_FIRST_LETTER}.Id = this.recordId;\n`)
+				ws.write(`${INDENT2}}\n`)  // close if statemnt.
 			}
 			else {
-			ws.write(`${INDENT2}${SOBJECT_FIRST_LETTER}.${field[1]} = this.${field[0]};\n`)
+				ws.write(`${INDENT2}${SOBJECT_FIRST_LETTER}.${field[1]} = this.${field[0]};\n`)
 			}
 		}) 
 		ws.write(`${INDENT2}return ${SOBJECT_FIRST_LETTER};\n`)
@@ -92,7 +92,6 @@ export function buildMessageClass(conn, apiVersion, sobjName) {
 		// write final closing Class definition brace.
 		ws.write('}\n')
 		ws.end();
-
 		
 		// Silently write the related meta.xml file.
 		ws = fs.createWriteStream(OUTPUT_FILE + '-meta.xml');	
@@ -104,11 +103,10 @@ export function buildMessageClass(conn, apiVersion, sobjName) {
 		ws.write('</ApexClass>');
 		ws.end();
 		
+		// Open the new message class in a Text Editor pane.
 		vscode.workspace.openTextDocument(OUTPUT_FILE).then(doc => vscode.window.showTextDocument(doc, 3));
 	})
 	.catch(
 		err => console.log('\n\nError building message class: ', err)
  	)
-		
-	return true;
 }
