@@ -1,3 +1,5 @@
+import * as vscode from 'vscode';
+import * as path from 'path';
 
 /**
    Builds a multi-dimensional array, where the first element in each
@@ -123,4 +125,39 @@ export function upperFirstLetter(s) {
 
 export function isAllUpperCase(s) {
    return s === s.toUpperCase()
+}
+
+export function loadConfig() {
+	// Look for force.json config file.
+	return vscode.workspace.findFiles('**/force.json')
+	.then(result => {
+		if (result.length == 0) {
+			return Promise.reject('Can\'t find a "force.json" file in the root of your project.');
+		}
+		return result;
+	})
+	.then(result => {
+		return vscode.workspace.openTextDocument(result[0])
+		.then(textDocument => {
+			let result = null;
+			let config = JSON.parse(textDocument.getText());
+			if (!config.username) { 
+				vscode.window.showErrorMessage('No value for "username" is set in "force.json".');
+			}
+			else if (!config.password) {
+				vscode.window.showErrorMessage('No value for "password" is set in "force.json".');
+			}
+			else if (!config.url) {
+				vscode.window.showErrorMessage('No value for "url" is set in "force.json".');
+			}
+			else if (!config.apiVersion) {
+				vscode.window.showErrorMessage('No value for "apiVersion" is set in "force.json".');
+			}
+			else {
+				result = config;
+			}
+			return result;
+		});
+	});
+	
 }

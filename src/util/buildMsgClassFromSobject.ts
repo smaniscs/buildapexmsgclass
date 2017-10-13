@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as util from './util';
 import * as path from 'path';
 
+// Emits an Apex Message class for the specified sObject.
 export function buildMessageClass(conn, apiVersion, sobjName) {
 	const PRETTY_FIELD_NAME = 0;
 	const RAW_FIELD_NAME = 1;

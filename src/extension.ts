@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import * as jsforce from 'jsforce';
 import {buildMessageClass} from './util/buildMsgClassFromSobject';
+import {loadConfig} from './util/util';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -17,75 +18,51 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.buildApexMsgClass', () => {
 		// The code you place here will be executed every time your command is executed
-		let conn = null;
 		
-		// Look for force.json config file.
-		vscode.workspace.findFiles('**/force.json')
+		// jsforce connection object and config block are used throughout the promise chain.
+		let conn = null;
+		let config = null;
+		
+		loadConfig()
 		.then(result => {
-			if (result.length == 0) {
-				vscode.window.showInformationMessage('Can\'t find a "force.json" file for your org credentials.');
+			config = result;
+			return new jsforce.Connection({
+				loginUrl: config.url
+			})
+		})
+		.then(result => {
+			conn = result;
+			return conn.login(config.username, config.password);
+ 		})				
+		.then(userInfo => {
+			return conn.describeGlobal();
+		})
+		.then(result => {
+			let sobjArray = new Array();
+			let sobj = null;
+		
+			// Build an array of Sobjects,  skipping any object that can't be modified in any way.
+			for (var i = 0; i < result.sobjects.length; i++) {
+				sobj = result.sobjects[i];
+				// skip non updateable objects
+				if (!(sobj.createable || sobj.deletable || sobj.updateable)) {
+					continue;
+				}
+				sobjArray.push(sobj.name);
+			}
+			
+			return vscode.window.showQuickPick(sobjArray.sort());
+		})
+		.then(selectedItem => {
+			// Build the Apex Message class from the target sObject.
+			if (selectedItem) {
+				buildMessageClass(conn, config.apiVersion, selectedItem);
+			}
+			else {
+				vscode.window.showErrorMessage('Apex Message class generation canceled.');
 				return;
 			}
-			// Load relevant config bits from file.
-			vscode.workspace.openTextDocument(result[0]).then(textDocument => {
-				let jsonText = JSON.parse(textDocument.getText());
-				let userName = jsonText.username;
-				let password = jsonText.password;
-				let url = jsonText.url;
-				let apiVersion = jsonText.apiVersion;
-				
-				if (!userName) { 
-					vscode.window.showErrorMessage('No value for "username" is set in "force.json".');
-				}
-				if (!password) {
-					vscode.window.showErrorMessage('No value for "password" is set in "force.json".');
-				}
-				if (!url) {
-					vscode.window.showErrorMessage('No value for "url" is set in "force.json".');
-				}
-				if (!apiVersion) {
-					vscode.window.showErrorMessage('No value for "apiVersion" is set in "force.json".');
-				}
-				
-				conn = new jsforce.Connection({
-					loginUrl: url
-				});
-				
-				// Login in to org, then get a list of all sObjects.
-				conn.login(userName, password)
-				.then(userInfo => conn.describeGlobal((err, res) => {
-					if (err) {
-						vscode.window.showErrorMessage('Error during login: ' + err);
-						return;
-					}
-					
-					let sobjArray = new Array();
-					let sobj = null;
-					
-					// Build an array of Sobjects,  skipping any object that can't be modified in any way.
-					for (var i = 0; i < res.sobjects.length; i++) {
-						sobj = res.sobjects[i];
-						// skip non updateable objects
-						if (!(sobj.createable || sobj.deletable || sobj.updateable)) {
-							continue;
-						}
-						sobjArray.push(sobj.name);
-					}
-					// Present user with QuickPick/type-ahead list of alpha-sorted sObjects.
-					vscode.window.showQuickPick(sobjArray.sort())
-					.then(selectedItem => {
-						// Build the Apex Message class from the target sObject.
-						if (selectedItem) {
-							buildMessageClass(conn, apiVersion, selectedItem);
-						}
-						else {
-							vscode.window.showErrorMessage('Apex Message class generation canceled.');
-							return;
-						}
-					});
-				}));
-			});
-		})
+		});
 	});
 
 	context.subscriptions.push(disposable);
