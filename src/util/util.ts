@@ -159,5 +159,21 @@ export function loadConfig() {
 			return result;
 		});
 	});
+}
+
+export function listSobjects(result) {
+	let sobjArray = new Array();
+	let sobj = null;
+
+	// Build an array of Sobjects,  skipping any object that can't be modified in any way.
+	for (var i = 0; i < result.sobjects.length; i++) {
+		sobj = result.sobjects[i];
+		// skip non updateable objects
+		if (!(sobj.createable || sobj.deletable || sobj.updateable)) {
+			continue;
+		}
+		sobjArray.push(sobj.name);
+	}
 	
+	return vscode.window.showQuickPick(sobjArray.sort());
 }

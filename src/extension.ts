@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import * as jsforce from 'jsforce';
 import {buildMessageClass} from './util/buildMsgClassFromSobject';
-import {loadConfig} from './util/util';
+import {loadConfig, listSobjects} from './util/util';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -38,20 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return conn.describeGlobal();
 		})
 		.then(result => {
-			let sobjArray = new Array();
-			let sobj = null;
-		
-			// Build an array of Sobjects,  skipping any object that can't be modified in any way.
-			for (var i = 0; i < result.sobjects.length; i++) {
-				sobj = result.sobjects[i];
-				// skip non updateable objects
-				if (!(sobj.createable || sobj.deletable || sobj.updateable)) {
-					continue;
-				}
-				sobjArray.push(sobj.name);
-			}
-			
-			return vscode.window.showQuickPick(sobjArray.sort());
+			return listSobjects(result);
 		})
 		.then(selectedItem => {
 			// Build the Apex Message class from the target sObject.
