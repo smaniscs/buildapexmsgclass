@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as jsforce from 'jsforce';
-import {buildMessageClass} from './util/buildMsgClassFromSobject';
+import {buildMessageClass} from './util/buildMsgClass';
 import {loadConfig, listSobjects} from './util/util';
 
 // this method is called when your extension is activated
