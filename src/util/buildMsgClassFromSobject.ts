@@ -4,7 +4,7 @@ import * as util from './util';
 import * as path from 'path';
 
 // Emits an Apex Message class for the specified sObject.
-export function buildMessageClass(conn, apiVersion, sobjName) {
+export function buildMessageClass(conn, config, sobjName) {
 	const PRETTY_FIELD_NAME = 0;
 	const RAW_FIELD_NAME = 1;
 	const FIELD_METADATA = 2;
@@ -99,7 +99,7 @@ export function buildMessageClass(conn, apiVersion, sobjName) {
 		ws.write('<?xml version="1.0" encoding="UTF-8"?>\n');
 		ws.write('<ApexClass xmlns="http://soap.sforce.com/2006/04/metadata">\n');
 		// four spaces are used by Salesforce to indent.  
-		ws.write(' ' + ' ' + ' ' + ' ' + '<apiVersion>' + apiVersion + '</apiVersion>');
+		ws.write(' ' + ' ' + ' ' + ' ' + '<apiVersion>' + config.apiVersion + '</apiVersion>');
 		ws.write(' ' + ' ' + ' ' + ' ' + '<status>Active</status>');
 		ws.write('</ApexClass>');
 		ws.end();

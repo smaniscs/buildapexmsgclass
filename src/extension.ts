@@ -23,6 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 		let conn = null;
 		let config = null;
 		
+		// Loads force.json and returns the JSON config structure.
 		loadConfig()
 		.then(result => {
 			config = result;
@@ -43,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 		.then(selectedItem => {
 			// Build the Apex Message class from the target sObject.
 			if (selectedItem) {
-				buildMessageClass(conn, config.apiVersion, selectedItem);
+				buildMessageClass(conn, config, selectedItem);
 			}
 			else {
 				vscode.window.showErrorMessage('Apex Message class generation canceled.');

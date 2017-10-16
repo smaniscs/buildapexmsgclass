@@ -27,6 +27,7 @@ suite("Extension Tests", () => {
 		let field1 = newFieldArray[0];
 		let field2 = newFieldArray[1];
 		
+		// resulting array is alpha-sorted on transcoded field name.
 		assert.equal(field1[0], 'anotherCustomFieldName');
 		assert.equal(field2[0], 'customFieldName');
 	});	
