@@ -38,18 +38,18 @@ export function activate(context: vscode.ExtensionContext) {
 		.then(userInfo => {
 			return conn.describeGlobal();
 		})
-		.then(result => {
-			return listSobjects(result);
+		.then(results => {
+			return listSobjects(results);
 		})
 		.then(selectedItem => {
-			// Build the Apex Message class from the target sObject.
-			if (selectedItem) {
-				buildMessageClass(conn, config, selectedItem);
-			}
-			else {
+			if (!selectedItem) {
 				vscode.window.showErrorMessage('Apex Message class generation canceled.');
 				return;
 			}
+			return conn.describe(selectedItem);
+		})
+		.then(sobject => {
+			buildMessageClass(sobject, config);
 		});
 	});
 
