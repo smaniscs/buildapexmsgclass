@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 
 /**
-   Builds a multi-dimensional array, where the first element in each
+	Builds a multi-dimensional array, where the first element in each
 	row is the camel-cased field name (minus any package prefix), the second element 
 	is the raw/unaltered Salesforce field name, and the third element is all the metadata 
 	about the field.
@@ -131,7 +131,7 @@ export function loadConfig() {
 	// Look for force.json config file.
 	return vscode.workspace.findFiles('**/force.json')
 	.then(result => {
-		if (result.length == 0) {
+		if (!result || result.length == 0) {
 			return Promise.reject('Can\'t find a "force.json" file in the root of your project.');
 		}
 		return result;
