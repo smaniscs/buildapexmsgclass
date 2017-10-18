@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 			conn = result;
 			return conn.login(config.username, config.password);
  		})				
-		.then(result => {
+		.then(userInfo => {
 			return conn.describeGlobal();
 		})
 		.then(listSobjects)
