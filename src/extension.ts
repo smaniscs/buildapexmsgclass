@@ -35,16 +35,14 @@ export function activate(context: vscode.ExtensionContext) {
 			conn = result;
 			return conn.login(config.username, config.password);
  		})				
-		.then(userInfo => {
+		.then(result => {
 			return conn.describeGlobal();
 		})
-		.then(results => {
-			return listSobjects(results);
-		})
+		.then(listSobjects)
 		.then(selectedItem => {
 			if (!selectedItem) {
-				vscode.window.showErrorMessage('Apex Message class generation canceled.');
-				return;
+				vscode.window.showInformationMessage('Apex Message class generation canceled.');
+				Promise.reject('Apex Message class generation canceled.');
 			}
 			return conn.describe(selectedItem);
 		})

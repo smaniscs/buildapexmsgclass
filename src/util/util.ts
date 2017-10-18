@@ -137,27 +137,27 @@ export function loadConfig() {
 		return result;
 	})
 	.then(result => {
-		return vscode.workspace.openTextDocument(result[0])
-		.then(textDocument => {
-			let result = null;
-			let config = JSON.parse(textDocument.getText());
-			if (!config.username) { 
-				vscode.window.showErrorMessage('No value for "username" is set in "force.json".');
-			}
-			else if (!config.password) {
-				vscode.window.showErrorMessage('No value for "password" is set in "force.json".');
-			}
-			else if (!config.url) {
-				vscode.window.showErrorMessage('No value for "url" is set in "force.json".');
-			}
-			else if (!config.apiVersion) {
-				vscode.window.showErrorMessage('No value for "apiVersion" is set in "force.json".');
-			}
-			else {
-				result = config;
-			}
-			return result;
-		});
+		return vscode.workspace.openTextDocument(result[0]);
+	})
+	.then(textDocument => {
+		let result = null;
+		let config = JSON.parse(textDocument.getText());
+		if (!config.username) { 
+			vscode.window.showErrorMessage('No value for "username" is set in "force.json".');
+		}
+		else if (!config.password) {
+			vscode.window.showErrorMessage('No value for "password" is set in "force.json".');
+		}
+		else if (!config.url) {
+			vscode.window.showErrorMessage('No value for "url" is set in "force.json".');
+		}
+		else if (!config.apiVersion) {
+			vscode.window.showErrorMessage('No value for "apiVersion" is set in "force.json".');
+		}
+		else {
+			result = config;
+		}
+		return result;
 	});
 }
 
@@ -175,5 +175,5 @@ export function listSobjects(result) {
 		sobjArray.push(sobj.name);
 	}
 	
-	return vscode.window.showQuickPick(sobjArray.sort());
+	return vscode.window.showQuickPick(sobjArray.sort(), {placeHolder: 'Select an sObject or ESC to cancel.'});
 }
