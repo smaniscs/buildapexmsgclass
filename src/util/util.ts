@@ -6,10 +6,12 @@ import * as path from 'path';
 	row is the camel-cased field name (minus any package prefix), the second element 
 	is the raw/unaltered Salesforce field name, and the third element is all the metadata 
 	about the field.
+	@param fields The raw results from a JSForce describe('sObjectName') call.
+	@returns The multi-dimensional array of sObject field data.
   */
 export function buildFieldArray(fields) {
-  var fieldArray = new Array()
-  var innerArray = null
+  var fieldArray = new Array();
+  var innerArray = null;
 
   fields.forEach((field, index, fields) => {
 	// omit any field which is not updateable.
@@ -24,12 +26,12 @@ export function buildFieldArray(fields) {
 	  innerArray.push('recordId');
 	}
 	else {
-	  innerArray.push(transcodeFieldName(field.name))
+	  innerArray.push(transcodeFieldName(field.name));
 	}
-	innerArray.push(field.name)
-	innerArray.push(field)
+	innerArray.push(field.name);
+	innerArray.push(field);
 
-	fieldArray.push(innerArray)
+	fieldArray.push(innerArray);
    })
 
   // Alpha sort on the friendly field name.
@@ -42,49 +44,58 @@ export function buildFieldArray(fields) {
 	}
   })
 
-  return fieldArray
+  return fieldArray;
 }
 
 
 
-/*
-  Transcodes Salesforce field names to a camel-case format, stripping any prefixed  
-  package name which is delimited by a double underscore.
+/**
+	Transcodes Salesforce field names to a camel-case format, stripping any prefixed  
+	package name which is delimited by a double underscore.
+	@param A raw field name from the target sObject.
+	@returns The sObject field name transcoded into a javascript-friendly camelcase field name.
 */
 export function transcodeFieldName(field) {
 
-  field = field.replace('__c', '')
+	field = field.replace('__c', '');
 
-  // If a package name is prefixed to the field name, discard it.
-  let pos = field.indexOf('__')
-  if (pos > -1) {
-	field = field.substring(pos+2);
-  }
-  
-  let nameParts = field.split('_');
-  let camelCaseName = '';
+	// If a package name is prefixed to the field name, discard it.
+	let pos = field.indexOf('__');
+	if (pos > -1) {
+		field = field.substring(pos+2);
+	}
 
-  nameParts.forEach((part, index, parts) => {
-	// if all letters after the first are uppercase,  go ahead and lowercase the whole field name.  This handles
-	// the case where a field named like "GUID__c"" would end up being named "gUID".
-	if (isAllUpperCase(part)) {
-	  part = part.toLowerCase()
-	}
-	else {
-	  part = lowerFirstLetter(part)
-	}
-	
-	if (index == 0) {
-	  camelCaseName += part;
-	}
-	else {
-	  camelCaseName += upperFirstLetter(part)
-	}
-  })	 
+	let nameParts = field.split('_');
+	let camelCaseName = '';
 
-  return camelCaseName
+	nameParts.forEach((part, index, parts) => {
+		// if all letters after the first are uppercase,  go ahead and lowercase the whole field name.  This handles
+		// the case where a field named like "GUID__c"" would end up being named "gUID".
+		if (isAllUpperCase(part)) {
+			part = part.toLowerCase();
+		}
+		else {
+			// handle the case where a field name part is 'SLAViolation', where you need to 
+			// convert it to 'slaViolation'.
+			let lastUpperPos = startsWithMoreThanTwoUpperCase(part);
+			if (lastUpperPos == -1) {
+				part = lowerFirstLetter(part);
+			}
+			else {
+				part = multipleUpperToCamel(part, lastUpperPos);
+			}
+		}
+		
+		if (index == 0) {
+		camelCaseName += part;
+		}
+		else {
+		camelCaseName += upperFirstLetter(part);
+		}
+	})
+
+	return camelCaseName;
 }
-
 
 
 /*
@@ -127,6 +138,68 @@ export function isAllUpperCase(s) {
    return s === s.toUpperCase()
 }
 
+/** 
+ * Figures out if the target string starts with more than two uppercase character and returns
+ * the index of the last uppercase character.
+ * @returns numeric The index of the last uppercase character found in the target string, or -1 if 
+ *   no uppercase characters found, the string start with a lowercase char, or starts with two or less
+ *   uppercase characters..
+ */
+export function startsWithMoreThanTwoUpperCase(str) {
+	if (str.substring(0,1) != str.substring(0,1).toUpperCase()) {
+		return -1.
+	}
+	
+	let result = -1;
+	let chars = str.split('');
+	let hasMultipleUpperCase = false;
+	let char = null;
+	let upperCount = 1;
+	
+	// note we start with index 1, where 
+	for (var i = 1; i < chars.length-1; i++) {
+		char = str.substring(i, i+1);
+		if (char == char.toUpperCase()) {
+			hasMultipleUpperCase = true;
+			upperCount++;
+		}
+		else {
+			result = i-1;
+			break;	
+		}		
+	}
+	// There has to be at least 2 uppercase characters, else we don't care.
+	if (upperCount <= 2) {
+		result = -1;
+	}
+	return result;
+}
+
+/**
+ * Converts a string with starts with more than two uppercase characters into 
+ * camel-case.  e.g.,  'SLAViolation' becomes 'slaViolation'.
+ * @param str The target string to be camel-cased.
+ * @param lastUpperPos The index of the last  uppercase char in the string.
+ * @returns A camel-cased string.
+ * @see startsWithMoreThanTwoUpperCase
+ */
+export function multipleUpperToCamel(str, lastUpperIndex) {
+	let chars = str.split('');
+	let result = '';
+	
+	for (var i = 0; i < str.length; i++) {
+		if (i == lastUpperIndex) {
+			result += str.slice(i);
+			break;
+		}
+		result += str.charAt(i).toLowerCase();
+	}
+	return result;
+}
+
+/**
+ * Loads the force.json config file, where this file is expected to be in the root of your project. 
+ */
 export function loadConfig() {
 	// Look for force.json config file.
 	return vscode.workspace.findFiles('**/force.json')
@@ -143,6 +216,7 @@ export function loadConfig() {
 		let result = null;
 		let config = JSON.parse(textDocument.getText());
 		if (!config.username) { 
+			
 			vscode.window.showErrorMessage('No value for "username" is set in "force.json".');
 		}
 		else if (!config.password) {
