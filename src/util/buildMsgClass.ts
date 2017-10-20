@@ -3,7 +3,12 @@ import * as fs from 'fs';
 import * as util from './util';
 import * as path from 'path';
 
-// Emits an Apex Message class for the specified sObject.
+/**
+ * Builds an Apex Message class from the target sObject metadata.
+ * @param sobject The metadata for the target sobject.
+ * @param config The config block from the force.json file, used mainly to get the API Version 
+ * when writing the meta.xml file for the Message class.
+ */ 
 export function buildMessageClass(sobject, config) {
 	const PRETTY_FIELD_NAME = 0;
 	const RAW_FIELD_NAME = 1;
@@ -23,7 +28,8 @@ export function buildMessageClass(sobject, config) {
 	ws.write(`${INDENT1}/**\n`);
 	ws.write(`${INDENT2}Models a ${sobject.name} object. Note that the 'Id' property is mapped to 'recordId'.\n`);
 	ws.write(`${INDENT1}*/\n`);
-		
+	
+	// A multi-dimensional array of transcoded field names and their metadata.
 	var fieldArray = util.buildFieldArray(sobject.fields);
 
 	// Write all of the class properties.
@@ -31,6 +37,7 @@ export function buildMessageClass(sobject, config) {
 		ws.write(`${INDENT1}public ${util.transcodeDataType(field[FIELD_METADATA].type)} ${field[PRETTY_FIELD_NAME]} {get; set;}\n`);
 	}) 
 
+	// Add a little ethnic-space (I would say 'whitespace', but it sounds kinda racist these days...).
 	ws.write('\n');
 
 	// Write default constructor.
@@ -66,10 +73,9 @@ export function buildMessageClass(sobject, config) {
 	ws.write(`${INDENT2}Convenience method for converting a Msg object into its equivalent sobject type.\n`);
 	ws.write(`${INDENT1}*/\n`);
 	ws.write(`${INDENT1}public ${sobject.name} toRecord() {\n`);
-
 	ws.write(`${INDENT2}${sobject.name} ${SOBJECT_FIRST_LETTER} = new ${sobject.name}();\n`);
 
-	// Move Msg properties to new SOBject instance properties.
+	// Move Msg properties to new sObject instance properties.
 	fieldArray.forEach((field, index, fields) => {
 		if (field[0] === 'recordId') {
 			ws.write(`${INDENT2}if(!String.isBlank(this.recordId)) {\n`  );
@@ -89,7 +95,7 @@ export function buildMessageClass(sobject, config) {
 	ws.write('}\n');
 	ws.end();
 	
-	// Silently write the related meta.xml file.
+	// Write the related meta.xml file.
 	ws = fs.createWriteStream(OUTPUT_FILE + '-meta.xml');	
 	ws.write('<?xml version="1.0" encoding="UTF-8"?>\n');
 	ws.write('<ApexClass xmlns="http://soap.sforce.com/2006/04/metadata">\n');

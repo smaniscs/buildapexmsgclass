@@ -52,7 +52,7 @@ export function buildFieldArray(fields) {
 /**
 	Transcodes Salesforce field names to a camel-case format, stripping any prefixed  
 	package name which is delimited by a double underscore.
-	@param A raw field name from the target sObject.
+	@param field A raw field name from the target sObject.
 	@returns The sObject field name transcoded into a javascript-friendly camelcase field name.
 */
 export function transcodeFieldName(field) {
@@ -97,11 +97,12 @@ export function transcodeFieldName(field) {
 	return camelCaseName;
 }
 
-
-/*
+/**
   Transcodes a Salesforce data type into an appropriate data type.  The default assumed type
   is String, which works for most cases.  Only datatype overrides are configured here, i.e. Double,
   Boolean, etc.
+  @param dataType A string Salesforce data type.
+  @returns The Salesforce datatype transcoded to a message class friendly format.
 */
 export function transcodeDataType(dataType) {
   dataType = dataType.toLowerCase()
@@ -117,9 +118,10 @@ export function transcodeDataType(dataType) {
   return returnType
 }
 
-
 /**
    Convenience method to lowercase the first byte of any String value. 
+   @param s A string value.
+   @returns The target string with a lowercase first letter.
  */
 export function lowerFirstLetter(s) {
   return s.substr(0, 1).toLowerCase() + s.substr(1)
@@ -127,13 +129,18 @@ export function lowerFirstLetter(s) {
 
 /**
    Convenience method to uppercase the first byte of any String value. 
+   @param s A string value.
+   @returns The target string with an uppercase first letter.
  */
-
 export function upperFirstLetter(s) {
   return s.substr(0,1).toUpperCase() + s.substr(1)
 }
 
-
+/**
+ * Verifies if a string is all uppercase.
+ * @param s A string value.
+ * @returns boolean true if the string is all uppercase, else false.
+ */
 export function isAllUpperCase(s) {
    return s === s.toUpperCase()
 }
@@ -141,6 +148,7 @@ export function isAllUpperCase(s) {
 /** 
  * Figures out if the target string starts with more than two uppercase character and returns
  * the index of the last uppercase character.
+ * @param str 
  * @returns numeric The index of the last uppercase character found in the target string, or -1 if 
  *   no uppercase characters found, the string start with a lowercase char, or starts with two or less
  *   uppercase characters..
@@ -179,7 +187,7 @@ export function startsWithMoreThanTwoUpperCase(str) {
  * Converts a string with starts with more than two uppercase characters into 
  * camel-case.  e.g.,  'SLAViolation' becomes 'slaViolation'.
  * @param str The target string to be camel-cased.
- * @param lastUpperPos The index of the last  uppercase char in the string.
+ * @param lastUpperIndex The index of the last uppercase char in the string.
  * @returns A camel-cased string.
  * @see startsWithMoreThanTwoUpperCase
  */
@@ -199,6 +207,7 @@ export function multipleUpperToCamel(str, lastUpperIndex) {
 
 /**
  * Loads the force.json config file, where this file is expected to be in the root of your project. 
+ * @returns The body of the force.json file as a JSON object.
  */
 export function loadConfig() {
 	// Look for force.json config file.
@@ -235,6 +244,14 @@ export function loadConfig() {
 	});
 }
 
+/**
+ * Parses the results of a JSForce describeGlobal() call, build an array of sObject names, then
+ * passes the array to the VSC API's vscode.window.showQuickPick() method to present the user
+ * with a type-ahead enabled picklist.
+ * @param result The results returned from a JSForce describeGlobal() call.
+ * @returns The selected item from the picklist of sObjects presented to the user or undefined.
+ * 
+ */
 export function listSobjects(result) {
 	let sobjArray = new Array();
 	let sobj = null;

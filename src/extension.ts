@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import * as jsforce from 'jsforce';
 import {buildMessageClass} from './util/buildMsgClass';
-import {startsWithMoreThanTwoUpperCase, loadConfig, listSobjects} from './util/util';
+import {loadConfig, listSobjects} from './util/util';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
