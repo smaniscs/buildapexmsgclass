@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.2] - 2017-10-20
 ### Added methods to properly camelcase field names like 'SLAViolation' to 'slaViolation'.
+### Added method-level parameter and return type documentation.
 
 ## [1.0.1] - 2017-10-19
 ### Added Unit Tests
