@@ -41,4 +41,4 @@ If using the ForceCode extension on a Mac, you can press OPTION+COMMAND+S to for
 
 ## Change Log
 
-[Change Log] (https://github.com/smaniscs/buildapexmsgclass/CHANGELOG.md)
+See the [Change Log](https://github.com/smaniscs/buildapexmsgclass/CHANGELOG.md) document.
