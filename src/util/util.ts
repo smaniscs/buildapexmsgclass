@@ -87,10 +87,10 @@ export function transcodeFieldName(field) {
 		}
 		
 		if (index == 0) {
-		camelCaseName += part;
+			camelCaseName += part;
 		}
 		else {
-		camelCaseName += upperFirstLetter(part);
+			camelCaseName += upperFirstLetter(part);
 		}
 	})
 
@@ -139,7 +139,7 @@ export function upperFirstLetter(s) {
 /**
  * Verifies if a string is all uppercase.
  * @param s A string value.
- * @returns boolean true if the string is all uppercase, else false.
+ * @returns boolean true if the string is all uppercase, else false.w
  */
 export function isAllUpperCase(s) {
    return s === s.toUpperCase()
@@ -148,15 +148,12 @@ export function isAllUpperCase(s) {
 /** 
  * Figures out if the target string starts with more than two uppercase character and returns
  * the index of the last uppercase character.
- * @param str 
+ * @param str Any string value.
  * @returns numeric The index of the last uppercase character found in the target string, or -1 if 
  *   no uppercase characters found, the string start with a lowercase char, or starts with two or less
  *   uppercase characters..
  */
 export function startsWithMoreThanTwoUpperCase(str) {
-	if (str.substring(0,1) != str.substring(0,1).toUpperCase()) {
-		return -1.
-	}
 	
 	let result = -1;
 	let chars = str.split('');
@@ -164,7 +161,12 @@ export function startsWithMoreThanTwoUpperCase(str) {
 	let char = null;
 	let upperCount = 1;
 	
-	// note we start with index 1, where 
+	// if the string doesn't start with an uppercase letter, immediately exit.
+	if (str.substring(0,1) != str.substring(0,1).toUpperCase()) {
+		return result;
+	}
+
+	// note we start with index 1, since we know at this point that the first char is uppercase.
 	for (var i = 1; i < chars.length-1; i++) {
 		char = str.substring(i, i+1);
 		if (char == char.toUpperCase()) {
@@ -180,6 +182,7 @@ export function startsWithMoreThanTwoUpperCase(str) {
 	if (upperCount <= 2) {
 		result = -1;
 	}
+	
 	return result;
 }
 
@@ -187,7 +190,8 @@ export function startsWithMoreThanTwoUpperCase(str) {
  * Converts a string with starts with more than two uppercase characters into 
  * camel-case.  e.g.,  'SLAViolation' becomes 'slaViolation'.
  * @param str The target string to be camel-cased.
- * @param lastUpperIndex The index of the last uppercase char in the string.
+ * @param lastUpperIndex The index of the last uppercase char in the string, where it's assumed that you'll
+ *   call starsWithMoreThanTwoUpperCase to get this value.
  * @returns A camel-cased string.
  * @see startsWithMoreThanTwoUpperCase
  */
@@ -208,6 +212,16 @@ export function multipleUpperToCamel(str, lastUpperIndex) {
 /**
  * Loads the force.json config file, where this file is expected to be in the root of your project. 
  * @returns The body of the force.json file as a JSON object.
+ * 
+ * A minimal force.json config would look like so:
+ *	
+ *		{
+ *			"apiVersion": "40.0",
+ * 			"username": "someone+orgname@codescience.com",
+ * 			"password": "S00perSekretP4$$w0rd_plus_security_token",
+ *			"url": "https://login.salesforce.com"
+ * 		}
+ * 
  */
 export function loadConfig() {
 	// Look for force.json config file.
@@ -225,7 +239,6 @@ export function loadConfig() {
 		let result = null;
 		let config = JSON.parse(textDocument.getText());
 		if (!config.username) { 
-			
 			vscode.window.showErrorMessage('No value for "username" is set in "force.json".');
 		}
 		else if (!config.password) {

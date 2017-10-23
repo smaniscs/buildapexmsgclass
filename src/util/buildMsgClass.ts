@@ -46,8 +46,7 @@ export function buildMessageClass(sobject, config) {
 	ws.write(`${INDENT1}*/\n`);
 	ws.write(`${INDENT1}public ${APEX_CLASS_NAME}() {\n\n`);
 	ws.write(`${INDENT1}}\n\n`);
-	
-
+w
 	// Write constructor which accepts the target custom object.
 	ws.write(`${INDENT1}/**\n`);
 	ws.write(`${INDENT2}Convenience constructor, builds Msg object from the specified custom object.\n`);

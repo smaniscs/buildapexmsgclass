@@ -9,10 +9,6 @@ import {loadConfig, listSobjects} from './util/util';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	//console.log('Congratulations, your extension "buildapexmsgclass" is now active!');
-
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -26,6 +22,10 @@ export function activate(context: vscode.ExtensionContext) {
 		// Loads force.json and returns the JSON config structure.
 		loadConfig()
 		.then(result => {
+			if (result == null) {
+				Promise.reject('force.json config not found.');
+				return;
+			}
 			config = result;
 			return new jsforce.Connection({
 				loginUrl: config.url
@@ -43,6 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 			if (!selectedItem) {
 				vscode.window.showInformationMessage('Apex Message class generation canceled.');
 				Promise.reject('Apex Message class generation canceled.');
+				return;
 			}
 			return conn.describe(selectedItem);
 		})
