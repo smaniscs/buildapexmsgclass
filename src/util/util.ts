@@ -256,7 +256,7 @@ export function loadConfig() {
 }
 
 /**
- * Parses the results of a JSForce describeGlobal() call, build an array of sObject names, then
+ * Parses the results of a JSForce describeGlobal() call, builds an array of sObject names, then
  * passes the array to the VSC API's vscode.window.showQuickPick() method to present the user
  * with a type-ahead enabled picklist.
  * @param result The results returned from a JSForce describeGlobal() call.
