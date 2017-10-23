@@ -38,7 +38,8 @@ The Message class contains a convenience constructor which accepts an instance o
 The generated Message class and meta.xml file are generated locally and you are required to manually push these files to the target org.  This can actually work to your advantage
 in the case where you would like to tweak the generated class prior to pushing it to your dev org.
 
-If using the ForceCode extension on a Mac, you can press OPTION+COMMAND+S to force a save to your org on the currenly open text editor pane.
+If using the ForceCode extension on a Mac, you can press OPTION+COMMAND+S to force a save to your org on the currenly open text editor pane. Note that you'll also need to do this for 
+the class's associated meta.xml file.
 
 ## Change Log
 
