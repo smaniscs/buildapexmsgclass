@@ -151,7 +151,7 @@ export function isAllUpperCase(s) {
  * @param str Any string value.
  * @returns numeric The index of the last uppercase character found in the target string, or -1 if 
  *   no uppercase characters found, the string start with a lowercase char, or starts with two or less
- *   uppercase characters..
+ *   uppercase characters.
  */
 export function startsWithMoreThanTwoUpperCase(str) {
 	
@@ -187,7 +187,7 @@ export function startsWithMoreThanTwoUpperCase(str) {
 }
 
 /**
- * Converts a string with starts with more than two uppercase characters into 
+ * Converts a string which starts with more than two uppercase characters into 
  * camel-case.  e.g.,  'SLAViolation' becomes 'slaViolation'.
  * @param str The target string to be camel-cased.
  * @param lastUpperIndex The index of the last uppercase char in the string, where it's assumed that you'll

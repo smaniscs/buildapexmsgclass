@@ -19,6 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
 		let conn = null;
 		let config = null;
 		
+		// Note that the native Promise library used by VSCode is Win-Js,  which doesn't 
+		// support the industry standard catch() mechanism.  Really? I'm shocked.  No, not
+		// really, it is Microsoft after all...
+		
 		// Loads force.json and returns the JSON config structure.
 		loadConfig()
 		.then(result => {
