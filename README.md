@@ -39,8 +39,6 @@ The generated Message class and meta.xml file are generated locally and you are 
 
 If using the ForceCode extension on a Mac, you can press OPTION+COMMAND+S to force a save to your org on the currenly open text editor pane.
 
-## Release Notes
+## Change Log
 
-### 1.0.0
-
-Initial release of the extension.
+[Change Log] (CHANGELOG.md)

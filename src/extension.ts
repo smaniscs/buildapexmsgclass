@@ -22,10 +22,6 @@ export function activate(context: vscode.ExtensionContext) {
 		// Loads force.json and returns the JSON config structure.
 		loadConfig()
 		.then(result => {
-			if (result == null) {
-				Promise.reject('force.json config not found.');
-				return;
-			}
 			config = result;
 			return new jsforce.Connection({
 				loginUrl: config.url

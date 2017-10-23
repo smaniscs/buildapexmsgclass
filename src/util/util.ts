@@ -227,12 +227,10 @@ export function loadConfig() {
 	// Look for force.json config file.
 	return vscode.workspace.findFiles('**/force.json')
 	.then(result => {
-		if (!result || result.length == 0) {
-			return Promise.reject('Can\'t find a "force.json" file in the root of your project.');
+		if (result.length == 0) {
+			vscode.window.showErrorMessage('Can\'t find a "force.json" file in the root of your project.');
+			Promise.reject('No force.json found.');
 		}
-		return result;
-	})
-	.then(result => {
 		return vscode.workspace.openTextDocument(result[0]);
 	})
 	.then(textDocument => {
